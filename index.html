@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Manhattan Buildings by Age</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.10/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+    #optionsDiv {
+      width: 300px;
+      padding: 0 12px 0 12px;
+      background-color: white;
+      padding: 10px;
+	  font-family: "Avenir Next W00","Helvitica Neue","Helvitica","Arial",sans-serif;
+    }
+
+
+  </style>
+
+  <script>
+    require([
+        "esri/Map",
+        "esri/views/SceneView",
+		"esri/widgets/LayerList",
+		"esri/widgets/Legend",
+		"esri/WebScene",
+		"esri/widgets/Home"
+      ],
+      function(
+        Map, SceneView, LayerList, Legend, WebScene, Home
+      ) {
+		
+		var scene = new WebScene({
+			portalItem: {
+				id: "f159081331944ed9bd43d924d4b17f75"
+			}
+		});
+		
+
+        var map = new Map({
+          basemap: "streets",
+		  ground: "world-elevation"
+        });
+
+        var view = new SceneView({
+		  map: scene,
+          container: "viewDiv",
+		  <!-- camera: { -->
+			  <!-- position: [-74.009866, 40.685584, 1800], -->
+			  <!-- tilt: 55	   -->
+		  <!-- } -->
+        });
+		
+		var homeBtn = new Home({
+			view: view
+		});
+		view.ui.add(homeBtn, "top-left");
+		
+		view.when(function(){
+			<!-- var buildingQuery = { -->
+				<!-- "Manhattan"					 -->
+			<!-- }; -->
+			var layerList = new LayerList({
+				view: view
+			});
+			//add widget to top-right corner of the view
+			//view.ui.add(layerList, "top-right");
+			
+			var legend = new Legend({
+				view: view,
+				<!-- layerInfos: [{ -->
+					<!-- title: "Manhattan Buildings" -->
+				<!-- }] -->
+			});
+			view.ui.add(legend, "bottom-right");
+			
+			function showAge(event) {
+
+			  // retrieve the query stored in the selected value
+			  var ageQuery = event.target.value;
+
+			  // update the definition expression of all layers
+			  scene.layers.forEach(function(layer) {
+				  layer.definitionExpression = ageQuery;
+			  });
+			}
+			
+			document.getElementById("ageSelect").addEventListener(
+			"change", showAge);
+			});
+		
+		view.ui.add(document.getElementById("optionsDiv"), {
+			position: "top-left",
+			index: 0
+		});
+
+
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+  <div id="optionsDiv">
+	<div>
+		<b>Filter Buildings by Year Built:</b>
+		<select id="ageSelect">
+			<option value="1=1">ALL</option>
+			<option value="YearBuilt < 1900">Before 1900</options>
+			<option value="YearBuilt >= 1900 AND YearBuilt <= 1939">1900 - 1939</options>
+			<option value="YearBuilt >= 1940 AND YearBuilt <= 1969">1940 - 1969</options>
+			<option value="YearBuilt >= 1970 AND YearBuilt <= 1999">1970 - 1999</options>
+			<option value="YearBuilt >= 2000">2000 - 2018</options>
+			<option value="YearBuilt IS NULL">NULL</options>
+		</select>
+	</div>
+  </div>
+</body>
+
+</html>
