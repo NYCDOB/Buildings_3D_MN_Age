@@ -55,11 +55,7 @@
 
         var view = new SceneView({
 		  map: scene,
-          container: "viewDiv",
-		  <!-- camera: { -->
-			  <!-- position: [-74.009866, 40.685584, 1800], -->
-			  <!-- tilt: 55	   -->
-		  <!-- } -->
+          container: "viewDiv"
         });
 		
 		var homeBtn = new Home({
@@ -68,14 +64,10 @@
 		view.ui.add(homeBtn, "top-left");
 		
 		view.when(function(){
-			<!-- var buildingQuery = { -->
-				<!-- "Manhattan"					 -->
-			<!-- }; -->
+
 			var layerList = new LayerList({
 				view: view
 			});
-			//add widget to top-right corner of the view
-			//view.ui.add(layerList, "top-right");
 			
 			var legend = new Legend({
 				view: view,
